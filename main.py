@@ -1,7 +1,8 @@
-import pygame
-import sys
 import random
-import time
+import sys
+from time import sleep
+
+import pygame
 
 
 # This is my first project using python and Pygame. Hoping to create various simple games.
@@ -12,10 +13,18 @@ def create_pipe():
     # new_pipe_top = pipe_surface.get_rect(midbottom=((screen_w // 2) + 50, random_pipe_pos - 140))
     # new_pipe = pipe_surface.get_rect(midtop=((screen_w // 2) + 50, random_pipe_pos))
 
-    x = random.randint(200,350)
+    x = random.randint(200, 350)
     new_pipe_top = pipe_surface.get_rect(midbottom=((screen_w // 2) + 50, x - 140))
     new_pipe = pipe_surface.get_rect(midtop=((screen_w // 2) + 50, x))
     return new_pipe, new_pipe_top
+
+
+def slow_print(text):
+    for letter in text:
+        sys.stdout.write(letter)
+        sys.stdout.flush()
+        sleep(0.1)
+    print("")
 
 
 def move_pipes(pipes):
@@ -81,7 +90,7 @@ flip_pipe = pygame.transform.flip(pipe_surface, False, True)
 pipe_list = []
 SPAWNPIPE = pygame.USEREVENT
 pygame.time.set_timer(SPAWNPIPE, 1200)
-pipe_height = [200, 250, 300, 350]
+# pipe_height = [200, 250, 300, 350]
 
 while True:
     for event in pygame.event.get():
@@ -96,7 +105,7 @@ while True:
                 game_active = True
                 pipe_list.clear()
                 bird_rect.center = (100, 250)
-                bird_movement = 0
+                bird_movement = -5
             elif event.key == pygame.K_BACKSPACE:
                 pygame.quit()
                 sys.exit()
@@ -127,9 +136,9 @@ while True:
 
     # Floor
     draw_floor()
-    floor_x_pos -= 1
+    floor_x_pos -= 2
     if floor_x_pos == -576 // 2:
         floor_x_pos = 0
 
     pygame.display.update()
-    clock.tick(120)
+    clock.tick(144)

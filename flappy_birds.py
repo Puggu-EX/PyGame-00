@@ -1,8 +1,8 @@
 import random
 import sys
+import pygame
 from time import sleep
 
-import pygame
 
 
 # This is my first project using python and Pygame. Flappy Birds :D
@@ -61,6 +61,18 @@ def rotate_bird(bird):
     return new_bird
 
 
+def bird_animation():
+    if bird_movement < 0:
+        changed_bird_index = 0
+    elif bird_movement > 0:
+        changed_bird_index = 2
+    else:
+        changed_bird_index = 1
+
+    bird_new = bird_frames[changed_bird_index]
+    return bird_new
+
+
 screen_w = 576
 screen_h = 1024
 
@@ -68,9 +80,9 @@ pygame.init()
 screen = pygame.display.set_mode((screen_w // 2, screen_h // 2))
 clock = pygame.time.Clock()
 
-###### Game Variables #######
+# ##### Game Variables ###### #
 gravity = .12
-bird_movement = 0.0
+bird_movement = -4.0
 
 game_active = True
 
@@ -94,7 +106,7 @@ bird_surface = bird_frames[bird_index]
 bird_rect = bird_surface.get_rect(center=((screen_w // 4) - 100, screen_h // 4))
 
 BIRDFLAP = pygame.USEREVENT + 1
-pygame.time.set_timer(BIRDFLAP,200)
+pygame.time.set_timer(BIRDFLAP, 200)
 
 # bird_surface = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
 # bird_surface = pygame.transform.scale2x(bird_surface)
@@ -118,11 +130,11 @@ while True:
             if event.key == pygame.K_SPACE and game_active:
                 bird_movement = 0.0
                 bird_movement -= 4.0
-            elif event.key == pygame.K_SPACE and game_active == False:
+            elif event.key == pygame.K_SPACE and game_active is False:
                 game_active = True
                 pipe_list.clear()
-                bird_rect.center = (100, 250)
-                bird_movement = -5
+                bird_rect.center = ((screen_w // 4) - 100, 250)
+                bird_movement = -3
             elif event.key == pygame.K_BACKSPACE:
                 pygame.quit()
                 sys.exit()
@@ -135,9 +147,11 @@ while True:
             if len(pipe_list) > 6:
                 pipe_list.pop(0)
                 pipe_list.pop(1)
+        """
+        This was used in the tutorial to continuously have the bird flap its wings.
         if event.type == BIRDFLAP:
             pass
-
+        """
     # Draws surfaces
     screen.blit(bg_surface, (0, 0))
 
@@ -146,6 +160,7 @@ while True:
         pipe_list = move_pipes(pipe_list)
         draw_pipes(pipe_list)
 
+        bird_surface = bird_animation()
         rotated_bird = rotate_bird(bird_surface)
 
         # Bird Movement

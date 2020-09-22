@@ -1,5 +1,5 @@
 # PyGame-00
-## First github project
+## First GitHub Project
 
 This is my first project using python and Pygame.
 Hoping to create various simple games both retro and modern. 

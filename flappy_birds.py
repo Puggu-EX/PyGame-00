@@ -136,8 +136,7 @@ while True:
                 pipe_list.pop(0)
                 pipe_list.pop(1)
         if event.type == BIRDFLAP:
-            if
-            bird_index += 1
+            pass
 
     # Draws surfaces
     screen.blit(bg_surface, (0, 0))

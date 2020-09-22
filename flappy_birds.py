@@ -5,8 +5,7 @@ from time import sleep
 import pygame
 
 
-# This is my first project using python and Pygame. Hoping to create various simple games.
-# Including but not limited to: Snake Game, Space Invaders, Pong, Super Mario, and Tron.
+# This is my first project using python and Pygame. Flappy Birds :D
 
 def create_pipe():
     # random_pipe_pos = random.choice(pipe_height)
@@ -57,6 +56,11 @@ def draw_floor():
     # screen.blit(floor_surface, (floor_x_pos + 576//2, 400))
 
 
+def rotate_bird(bird):
+    new_bird = pygame.transform.rotozoom(bird, -bird_movement * 8, 1)
+    return new_bird
+
+
 screen_w = 576
 screen_h = 1024
 
@@ -65,7 +69,7 @@ screen = pygame.display.set_mode((screen_w // 2, screen_h // 2))
 clock = pygame.time.Clock()
 
 ###### Game Variables #######
-gravity = .15
+gravity = .12
 bird_movement = 0.0
 
 game_active = True
@@ -80,9 +84,21 @@ floor_surface = pygame.transform.scale(floor_surface, (576, 115))
 floor_x_pos = 0
 
 # Bird Surface
-bird_surface = pygame.image.load('assets/bluebird-midflap.png').convert()
-# bird_surface = pygame.transform.scale2x(bird_surface)
+
+bird_downflap = pygame.image.load('assets/bluebird-downflap.png').convert_alpha()
+bird_midflap = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
+bird_upflap = pygame.image.load('assets/bluebird-upflap.png').convert_alpha()
+bird_frames = [bird_downflap, bird_midflap, bird_upflap]
+bird_index = 0
+bird_surface = bird_frames[bird_index]
 bird_rect = bird_surface.get_rect(center=((screen_w // 4) - 100, screen_h // 4))
+
+BIRDFLAP = pygame.USEREVENT + 1
+pygame.time.set_timer(BIRDFLAP,200)
+
+# bird_surface = pygame.image.load('assets/bluebird-midflap.png').convert_alpha()
+# bird_surface = pygame.transform.scale2x(bird_surface)
+# bird_rect = bird_surface.get_rect(center=((screen_w // 4) - 100, screen_h // 4))
 
 # Pipe Surface, List, Entity, Spawn Timer, Height List
 pipe_surface = pygame.image.load('assets/pipe-green.png').convert()
@@ -97,6 +113,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        # Key Register Event
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and game_active:
                 bird_movement = 0.0
@@ -109,6 +126,7 @@ while True:
             elif event.key == pygame.K_BACKSPACE:
                 pygame.quit()
                 sys.exit()
+        # Pipe spawn event
         if event.type == SPAWNPIPE:
             pipe_list.extend(create_pipe())
             # print("Pipe Spawn: ", len(pipe_list))
@@ -117,6 +135,9 @@ while True:
             if len(pipe_list) > 6:
                 pipe_list.pop(0)
                 pipe_list.pop(1)
+        if event.type == BIRDFLAP:
+            if
+            bird_index += 1
 
     # Draws surfaces
     screen.blit(bg_surface, (0, 0))
@@ -126,17 +147,19 @@ while True:
         pipe_list = move_pipes(pipe_list)
         draw_pipes(pipe_list)
 
+        rotated_bird = rotate_bird(bird_surface)
+
         # Bird Movement
         bird_movement += gravity
         bird_rect.centery += bird_movement
-        screen.blit(bird_surface, bird_rect)
+        screen.blit(rotated_bird, bird_rect)
 
         # Keep Game Active / Check Collision
         game_active = check_collision(pipe_list)
 
     # Floor
     draw_floor()
-    floor_x_pos -= 2
+    floor_x_pos -= 1.5
     if floor_x_pos == -576 // 2:
         floor_x_pos = 0
 

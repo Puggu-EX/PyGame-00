@@ -3,24 +3,14 @@ import pygame
 from random import randint
 
 
-def draw_brick(bricks):
-    count = 0
-    for brick in bricks:
-        if 0 <= count <= 11:
-            screen.blit(brick_surface_teel, brick)
-        elif 12 <= count <= 23:
-            screen.blit(brick_surface_purple, brick)
-        elif 24 <= count <= 35:
-            screen.blit(brick_surface_blue, brick)
-        elif 36 <= count <= 47:
-            screen.blit(brick_surface_cyan, brick)
-        elif 48 <= count <= 69:
-            screen.blit(brick_surface_green, brick)
-        count += 1
+def draw_bricks(brick, surface):
+    for bricks, surfaces in zip(brick, surface):
+        screen.blit(surfaces, bricks)
 
 
 def delete_brick():
     pass
+
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -29,16 +19,17 @@ screen = pygame.display.set_mode((1280, 720))
 """
 Game Variables
 """
+
 # Brick Surface
 brick_surface_blue_01 = pygame.image.load('assets/brick_breaker_assets/01-Breakout-Tiles.png')
 brick_surface_blue_02 = pygame.image.load('assets/brick_breaker_assets/02-Breakout-Tiles.png')
 brick_surface_blue = brick_surface_blue_01
 brick_surface_blue = pygame.transform.scale(brick_surface_blue, (85, 35))
 
-brick_surface_teel_01 = pygame.image.load('assets/brick_breaker_assets/17-Breakout-Tiles.png')
-brick_surface_teel_02 = pygame.image.load('assets/brick_breaker_assets/18-Breakout-Tiles.png')
-brick_surface_teel = brick_surface_teel_01
-brick_surface_teel = pygame.transform.scale(brick_surface_teel, (85, 35))
+brick_surface_teal_01 = pygame.image.load('assets/brick_breaker_assets/17-Breakout-Tiles.png')
+brick_surface_teal_02 = pygame.image.load('assets/brick_breaker_assets/18-Breakout-Tiles.png')
+brick_surface_teal = brick_surface_teal_01
+brick_surface_teal = pygame.transform.scale(brick_surface_teal, (85, 35))
 
 brick_surface_green_01 = pygame.image.load('assets/brick_breaker_assets/03-Breakout-Tiles.png')
 brick_surface_green_02 = pygame.image.load('assets/brick_breaker_assets/04-Breakout-Tiles.png')
@@ -69,11 +60,32 @@ for i in range(5):
     if i != 0:
         count_y += 50
     for j in range(12):
-        new_brick = brick_surface_teel.get_rect(topleft=(count_x, count_y))
+        new_brick = brick_surface_teal.get_rect(topleft=(count_x, count_y))
         count_x += 100
         if count_x == 1245:
             count_x = 45
         brick_list.append(new_brick)
+
+brick_surface_list = []
+brick_surface_list.clear()
+count = 0
+for i in range(60):
+    if 0 <= count <= 11:
+        new_surface = brick_surface_teal
+    elif 12 <= count <= 23:
+        new_surface = brick_surface_purple
+    elif 24 <= count <= 35:
+        new_surface = brick_surface_blue
+    elif 36 <= count <= 47:
+        new_surface = brick_surface_cyan
+    else:
+        new_surface = brick_surface_green
+    count += 1
+    brick_surface_list.append(new_surface)
+
+"""
+Game Loop
+"""
 
 while True:
     for event in pygame.event.get():
@@ -84,10 +96,14 @@ while True:
             pass
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                x = randint(0, 10)
+                brick_list.pop(0)
+                brick_surface_list.pop(0)
 
+    # Draw Background
     screen.blit(background_surface, (0, 0))
-    draw_brick(brick_list)
+
+    # Draw Bricks
+    draw_bricks(brick_list, brick_surface_list)
 
     pygame.display.update()
     clock.tick(144)

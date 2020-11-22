@@ -1,3 +1,5 @@
+# Please do ignore this. I realize is horrible. I automated the creation of these lines and used them to quickly deploy. 
+
 import pygame
 
 brick_w = 85
